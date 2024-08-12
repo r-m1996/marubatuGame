@@ -16,6 +16,7 @@ const resetButton = document.getElementById('reset-button');
  */
 const viewCurrentPlayer = document.getElementById('view-current-player');
 
+const viewPlayerName = document.getElementById('view-player-name');
 /**
  * 現在のプレイヤー ('X' または 'O')
  * @type {string}
@@ -151,13 +152,14 @@ function resetGame() {
     cell.textContent = '';
     cell.style.color = '#000000';
   });
+  showViewCurrentPlayer();
 }
 
 /**
  * 現在のプレイヤーを表示する
  */
 function showViewCurrentPlayer() {
-  viewCurrentPlayer.innerText = `現在のプレイヤーは${currentPlayer}です。`;
+  viewCurrentPlayer.innerText = `現在は ${playerName}（${currentPlayer}）の番です。`;
 }
 
 /**
@@ -198,3 +200,70 @@ function highlightOldMove(index) {
 // イベントリスナーの設定
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
 resetButton.addEventListener('click', resetGame);
+
+// プレイヤー名のCookieキー
+const PLAYER_NAME_COOKIE_KEY = 'ticTacToePlayerName';
+
+/**
+ * グローバル変数としてプレイヤー名を保持
+ * @type {string|null}
+ */
+let playerName = null;
+
+/**
+ * プレイヤー名をCookieに保存する
+ * @param {string} name - 保存するプレイヤー名
+ */
+function savePlayerName(name) {
+  document.cookie = `${PLAYER_NAME_COOKIE_KEY}=${encodeURIComponent(name)}; path=/; max-age=${60 * 60 * 24 * 365}`;
+  playerName = name; // グローバル変数に保存
+}
+
+/**
+ * Cookieからプレイヤー名を取得する
+ * @returns {string|null} - Cookieから取得したプレイヤー名
+ */
+function getPlayerNameFromCookie() {
+  const matches = document.cookie.match(new RegExp(`(?:^|; )${PLAYER_NAME_COOKIE_KEY}=([^;]*)`));
+  return matches ? decodeURIComponent(matches[1]) : null;
+}
+
+/**
+ * ページ読み込み時にプレイヤー名を表示する
+ */
+function loadPlayerName() {
+  const playerNameInput = document.getElementById('player-name');
+  playerName = getPlayerNameFromCookie();
+
+  if (playerName) {
+    playerNameInput.value = playerName;
+
+    viewPlayerName.innerText = `プレイヤー名：${playerName}`;
+  }
+}
+
+/**
+ * プレイヤー名の保存ボタンがクリックされたときの処理
+ */
+document.getElementById('save-name-button').addEventListener('click', function () {
+  const playerNameInput = document.getElementById('player-name');
+  const name = playerNameInput.value;
+
+  if (name) {
+    savePlayerName(name);
+    alert('プレイヤー名を保存しました！');
+  } else {
+    alert('プレイヤー名を入力してください。');
+  }
+});
+
+// ページ読み込み時にプレイヤー名を読み込む
+window.onload = loadPlayerName;
+
+/**
+ * ページ読み込み時の初期化処理
+ */
+window.onload = function () {
+  loadPlayerName();  // プレイヤー名をロード
+  resetGame();       // ゲームをリセット
+};
