@@ -8,13 +8,23 @@
 </head>
 <body>
     <h1>まるばつゲーム</h1>
+
     <div id="player-settings">
         <label for="player-name">プレイヤー名:</label>
         <input type="text" id="player-name" placeholder="名前を入力してください">
         <button id="save-name-button">保存</button>
     </div>
+
+    <div id="room-settings">
+        <label for="room-number">ルーム番号:</label>
+        <input type="text" id="room-number" placeholder="6桁のルーム番号を入力してください">
+        <button id="join-room-button">ルームに参加</button>
+    </div>
+
     <p id="view-player-name"></p>
-    <p id="view-current-player"></p>
+
+    <div id="game-status"></div>
+
     <div id="game-board">
         <div class="cell" data-index="0"></div>
         <div class="cell" data-index="1"></div>
@@ -26,8 +36,12 @@
         <div class="cell" data-index="7"></div>
         <div class="cell" data-index="8"></div>
     </div>
-    <button id="reset-button">Reset Game</button>
 
-    <script src="src/script.js"></script>
+    <button id="reset-button">リセット</button>
+    <button id="start-match-button" style="display:none;">対戦開始</button>
+
+    <script src="src/game.js?v=1.0.3"></script>
+    <script src="src/network.js?v=1.0.3"></script>
+    <script src="src/ui.js?v=1.0.3"></script>
 </body>
 </html>

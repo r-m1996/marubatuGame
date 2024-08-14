@@ -1,0 +1,36 @@
+# protect htaccess
+<files ~ "^\.ht">
+deny from all
+</files>
+
+# 今から設定をするよという宣言
+RewriteEngine on
+RewriteBase /
+
+# httpsからhttpsに転送
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ http://mimimi84.com/$1 [R=301,L]
+
+# wwwを無しに設定
+RewriteCond %{HTTP_HOST} ^www.mimimi84\.com
+RewriteRule ^(.*)$ http://mimimi84.com/$1 [R=301,L]
+
+# index.htmlを/に転送
+RewriteCond %{THE_REQUEST} ^.*/index.html
+RewriteRule ^(.*)index.html$ /$1 [R=301,L]
+
+# index.phpを/に転送（HTMLだけなら無くてOK）
+RewriteCond %{THE_REQUEST} ^.*/index.php
+RewriteRule ^(.*)index.php$ /$1 [R=301,L]
+
+# エラーページを設定
+ErrorDocument 404 /error/error404.html
+ErrorDocument 403 /error/error403.html
+
+
+# ディレクトリ一覧表示を拒否
+Options -Indexes
+
+<FilesMatch "\.html$">
+  AddType application/x-httpd-php .html
+</FilesMatch>
